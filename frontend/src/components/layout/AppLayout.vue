@@ -22,6 +22,12 @@
           </template>
           行情看板
         </a-menu-item>
+        <a-menu-item key="/calendar">
+          <template #icon>
+            <CalendarOutlined />
+          </template>
+          债券日历
+        </a-menu-item>
         <a-menu-item key="/market">
           <template #icon>
             <StockOutlined />
@@ -85,6 +91,7 @@ import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {
   DashboardOutlined,
+  CalendarOutlined,
   StockOutlined,
   SwapOutlined,
   FundOutlined,

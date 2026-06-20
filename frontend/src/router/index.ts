@@ -17,6 +17,7 @@ const router = createRouter({
       children: [
         { path: '', redirect: '/dashboard' },
         { path: 'dashboard', name: 'Dashboard', component: () => import('../views/Dashboard.vue') },
+        { path: 'calendar', name: 'BondCalendar', component: () => import('../views/BondCalendar.vue') },
         { path: 'market', name: 'Market', component: () => import('../views/MarketView.vue') },
         { path: 'market/:id', name: 'BondDetail', component: () => import('../views/BondDetail.vue') },
         { path: 'trades', name: 'Trades', component: () => import('../views/TradesView.vue') },
