@@ -82,6 +82,12 @@
           </template>
           我的关注
         </a-menu-item>
+        <a-menu-item key="/holdings">
+          <template #icon>
+            <WalletOutlined />
+          </template>
+          模拟持仓
+        </a-menu-item>
         <a-menu-item key="/settings/appearance">
           <template #icon>
             <BgColorsOutlined />
@@ -165,6 +171,7 @@ import {
   QuestionCircleOutlined,
   BgColorsOutlined,
   RiseOutlined,
+  WalletOutlined,
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '../../stores/auth'
 import { useHotkeysStore } from '../../stores/hotkeys'

@@ -29,6 +29,7 @@ const router = createRouter({
         { path: 'research/:id', name: 'ResearchDetail', component: () => import('../views/ResearchDetail.vue') },
         { path: 'rating-changes', name: 'RatingChanges', component: () => import('../views/RatingChanges.vue') },
         { path: 'favorites', name: 'Favorites', component: () => import('../views/FavoritesView.vue') },
+        { path: 'holdings', name: 'SimulatedHoldings', component: () => import('../views/SimulatedHoldings.vue') },
         { path: 'shortcuts', name: 'ShortcutsHelp', component: () => import('../views/ShortcutsHelp.vue') },
         { path: 'settings/appearance', name: 'AppearanceSettings', component: () => import('../views/AppearanceSettings.vue') },
         { path: 'admin/users', name: 'AdminUsers', component: () => import('../views/admin/UserManagement.vue') },
