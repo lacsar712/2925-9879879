@@ -22,6 +22,8 @@ async def list_bonds(
     keyword: Optional[str] = Query(None, description="搜索关键词"),
     bond_type: Optional[str] = Query(None, description="债券类型"),
     credit_rating: Optional[str] = Query(None, description="信用评级"),
+    term_min: Optional[float] = Query(None, description="剩余期限最小值(年)"),
+    term_max: Optional[float] = Query(None, description="剩余期限最大值(年)"),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
@@ -43,6 +45,14 @@ async def list_bonds(
     if credit_rating:
         query = query.where(Bond.credit_rating == credit_rating)
         count_query = count_query.where(Bond.credit_rating == credit_rating)
+
+    if term_min is not None:
+        query = query.where(Bond.remaining_term >= term_min)
+        count_query = count_query.where(Bond.remaining_term >= term_min)
+
+    if term_max is not None:
+        query = query.where(Bond.remaining_term < term_max)
+        count_query = count_query.where(Bond.remaining_term < term_max)
 
     total_result = await db.execute(count_query)
     total = total_result.scalar()

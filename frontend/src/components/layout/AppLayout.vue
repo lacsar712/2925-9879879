@@ -28,6 +28,12 @@
           </template>
           债券日历
         </a-menu-item>
+        <a-menu-item key="/heatmap">
+          <template #icon>
+            <FireOutlined />
+          </template>
+          市场热力图
+        </a-menu-item>
         <a-menu-item key="/market">
           <template #icon>
             <StockOutlined />
@@ -172,6 +178,7 @@ import {
   BgColorsOutlined,
   RiseOutlined,
   WalletOutlined,
+  FireOutlined,
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '../../stores/auth'
 import { useHotkeysStore } from '../../stores/hotkeys'
