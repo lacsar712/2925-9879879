@@ -68,7 +68,7 @@
               size="small"
               :options="speedOptions"
             />
-          </div>
+            </div>
 
           <div class="flex items-center gap-3">
             <a-switch
@@ -107,6 +107,7 @@
             :title="formatTime(snap.snapshot_time)"
             @click="goToSnapshot(index)"
           />
+        </div>
         </div>
       </a-card>
     </div>
@@ -254,7 +255,7 @@
                 <template v-else-if="column.key === 'price'">
                   <span
                     class="tabular-nums"
-                    :class="record.direction === 'buy' ? 'text-red-600' : 'text-green-600"
+                    :class="record.direction === 'buy' ? 'text-red-600' : 'text-green-600'"
                   >
                     {{ formatPrice(record.price) }}
                   </span>

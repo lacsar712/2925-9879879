@@ -84,17 +84,17 @@
                   <div class="quote-row bid-row">
                     <span class="quote-label">买</span>
                     <span class="quote-price bid-price tabular-nums">
-                      {{ formatPrice(row.quotes[source.source_id].bid_price) }}
+                      {{ formatPrice(row.quotes[source.source_id]?.bid_price) }}
                     </span>
                   </div>
                   <div class="quote-row ask-row">
                     <span class="quote-label">卖</span>
                     <span class="quote-price ask-price tabular-nums">
-                      {{ formatPrice(row.quotes[source.source_id].ask_price) }}
+                      {{ formatPrice(row.quotes[source.source_id]?.ask_price) }}
                     </span>
                   </div>
                   <div class="quote-time tabular-nums">
-                    {{ formatTimeAgo(row.quotes[source.source_id].quote_time) }}
+                    {{ formatTimeAgo(row.quotes[source.source_id]?.quote_time) }}
                   </div>
                 </template>
                 <template v-else>

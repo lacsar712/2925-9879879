@@ -154,22 +154,21 @@
                 block
                 @click.stop="handleApplyTheme(theme.id)"
               >
-                <template v-if="currentTheme === theme.id">
-                  <template #icon><CheckOutlined /></template>
-                  正在使用
+                <template #icon>
+                  <CheckOutlined v-if="currentTheme === theme.id" />
+                  <ThunderboltOutlined v-else />
                 </template>
-                <template v-else>
-                  <template #icon><ThunderboltOutlined /></template>
-                  应用主题
-                </template>
+                {{ currentTheme === theme.id ? '正在使用' : '应用主题' }}
               </a-button>
               <a-button
                 size="small"
                 @click.stop="handleSetDefault(theme.id)"
                 :disabled="defaultTheme === theme.id"
               >
-                <template #icon v-if="defaultTheme === theme.id"><CheckOutlined /></template>
-                <template #icon-else><StarOutlined /></template>
+                <template #icon>
+                  <CheckOutlined v-if="defaultTheme === theme.id" />
+                  <StarOutlined v-else />
+                </template>
                 {{ defaultTheme === theme.id ? '已设默认' : '设为默认' }}
               </a-button>
             </div>
@@ -273,15 +272,15 @@
 
 <script setup lang="ts">
 import {
-  MoonOutlined,
-  SunOutlined,
+  CloudOutlined,
+  BulbOutlined,
   EyeOutlined,
   CheckOutlined,
   StarOutlined,
   ThunderboltOutlined,
 } from '@ant-design/icons-vue'
-import { useTheme } from '../../composables/useTheme'
-import type { ThemeMode } from '../../types/theme'
+import { useTheme } from '../composables/useTheme'
+import type { ThemeMode } from '../types/theme'
 import ColorSwatch from './components/ColorSwatch.vue'
 
 const {
@@ -294,13 +293,13 @@ const {
 } = useTheme()
 
 const iconMap: Record<string, any> = {
-  MoonOutlined,
-  SunOutlined,
+  CloudOutlined,
+  BulbOutlined,
   EyeOutlined,
 }
 
 function getThemeIcon(iconName: string) {
-  return iconMap[iconName] || MoonOutlined
+  return iconMap[iconName] || CloudOutlined
 }
 
 function handleSelectTheme(mode: ThemeMode) {

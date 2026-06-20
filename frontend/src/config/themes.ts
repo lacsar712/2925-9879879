@@ -5,7 +5,7 @@ export const THEMES: Record<ThemeMode, ThemeConfig> = {
     id: 'dark',
     name: '深色模式',
     description: '护眼深色主题，适合夜间和长时间使用',
-    icon: 'MoonOutlined',
+    icon: 'CloudOutlined',
     preview: {
       sider: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
       header: '#ffffff',
@@ -68,7 +68,7 @@ export const THEMES: Record<ThemeMode, ThemeConfig> = {
     id: 'light',
     name: '浅色模式',
     description: '清新明亮的浅色主题，适合日间办公场景',
-    icon: 'SunOutlined',
+    icon: 'BulbOutlined',
     preview: {
       sider: 'linear-gradient(180deg, #0050b3 0%, #096dd9 50%, #1890ff 100%)',
       header: '#ffffff',

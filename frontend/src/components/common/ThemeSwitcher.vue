@@ -67,8 +67,8 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import {
-  MoonOutlined,
-  SunOutlined,
+  CloudOutlined,
+  BulbOutlined,
   EyeOutlined,
   CheckOutlined,
   SettingOutlined,
@@ -80,15 +80,15 @@ const router = useRouter()
 const { currentTheme, currentThemeConfig, themeList, changeTheme } = useTheme()
 
 const iconMap: Record<string, any> = {
-  MoonOutlined,
-  SunOutlined,
+  CloudOutlined,
+  BulbOutlined,
   EyeOutlined,
 }
 
-const currentIcon = computed(() => iconMap[currentThemeConfig.value.icon] || MoonOutlined)
+const currentIcon = computed(() => iconMap[currentThemeConfig.value.icon] || CloudOutlined)
 
 function getThemeIcon(iconName: string) {
-  return iconMap[iconName] || MoonOutlined
+  return iconMap[iconName] || CloudOutlined
 }
 
 function handleMenuClick({ key }: { key: string }) {

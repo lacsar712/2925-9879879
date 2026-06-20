@@ -74,7 +74,7 @@
         </a-space>
       </template>
 
-      <a-empty v-if="store.holdings.length === 0" description="暂无持仓，请点击"新增持仓"添加" />
+      <a-empty v-if="store.holdings.length === 0" description="暂无持仓，请点击「新增持仓」添加" />
 
       <a-table
         v-else

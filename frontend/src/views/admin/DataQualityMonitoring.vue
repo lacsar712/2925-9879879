@@ -61,7 +61,7 @@
           <a-card class="rounded-lg bg-red-50/80">
             <a-statistic
               title="异常"
-              :value="overview?.critical_sources + (overview?.error_sources ?? 0)"
+              :value="(overview?.critical_sources ?? 0) + (overview?.error_sources ?? 0)"
               class="tabular-nums"
             >
               <template #prefix>
