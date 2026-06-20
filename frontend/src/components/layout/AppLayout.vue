@@ -70,6 +70,12 @@
           </template>
           研报摘要
         </a-menu-item>
+        <a-menu-item key="/rating-changes">
+          <template #icon>
+            <RiseOutlined />
+          </template>
+          评级变动
+        </a-menu-item>
         <a-menu-item key="/favorites">
           <template #icon>
             <StarOutlined />
@@ -158,6 +164,7 @@ import {
   SearchOutlined,
   QuestionCircleOutlined,
   BgColorsOutlined,
+  RiseOutlined,
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '../../stores/auth'
 import { useHotkeysStore } from '../../stores/hotkeys'

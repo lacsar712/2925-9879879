@@ -1,11 +1,32 @@
 import uuid
 from datetime import date, datetime
 
-from sqlalchemy import String, Enum, Date, Numeric, DateTime, Text, Boolean, func
+from sqlalchemy import String, Enum, Date, Numeric, DateTime, Text, Boolean, func, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+
+
+class RatingChange(Base):
+    __tablename__ = "rating_changes"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    bond_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("bonds.id"), nullable=False, index=True)
+    agency: Mapped[str] = mapped_column(String(50), nullable=False)
+    change_type: Mapped[str] = mapped_column(
+        Enum("upgrade", "downgrade", "outlook", name="rating_change_type_enum"),
+        nullable=False,
+    )
+    old_rating: Mapped[str] = mapped_column(String(20), nullable=True)
+    new_rating: Mapped[str] = mapped_column(String(20), nullable=True)
+    old_outlook: Mapped[str] = mapped_column(String(20), nullable=True)
+    new_outlook: Mapped[str] = mapped_column(String(20), nullable=True)
+    effective_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    bond = relationship("Bond", lazy="selectin")
 
 
 class Bond(Base):

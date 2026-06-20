@@ -27,6 +27,7 @@ const router = createRouter({
         { path: 'swaps', name: 'Swaps', component: () => import('../views/SwapsView.vue') },
         { path: 'research', name: 'ResearchList', component: () => import('../views/ResearchList.vue') },
         { path: 'research/:id', name: 'ResearchDetail', component: () => import('../views/ResearchDetail.vue') },
+        { path: 'rating-changes', name: 'RatingChanges', component: () => import('../views/RatingChanges.vue') },
         { path: 'favorites', name: 'Favorites', component: () => import('../views/FavoritesView.vue') },
         { path: 'shortcuts', name: 'ShortcutsHelp', component: () => import('../views/ShortcutsHelp.vue') },
         { path: 'settings/appearance', name: 'AppearanceSettings', component: () => import('../views/AppearanceSettings.vue') },

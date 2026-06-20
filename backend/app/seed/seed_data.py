@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
 
-from app.models.bond import Bond, MarketSource
+from app.models.bond import Bond, MarketSource, RatingChange
 from app.models.quote import Quote
 from app.models.trade import Trade
 from app.models.futures import FuturesQuote
@@ -34,6 +34,7 @@ async def seed_all(db: AsyncSession):
     await seed_trades(db, bonds, sources)
     await seed_futures(db)
     await seed_swaps(db, bonds)
+    await seed_rating_changes(db, bonds)
     await db.flush()
     await db.commit()
 
@@ -257,3 +258,74 @@ async def seed_swaps(db: AsyncSession, bonds: list[Bond]):
                 quote_time=now - timedelta(minutes=random.randint(1, 720)),
             )
             db.add(sq)
+
+
+async def seed_rating_changes(db: AsyncSession, bonds: list[Bond]):
+    agencies = ["中诚信", "大公国际", "联合资信", "东方金诚", "中证鹏元", "标普", "穆迪", "惠誉"]
+    rating_levels = ["AAA", "AA+", "AA", "AA-", "A+", "A", "A-", "BBB+", "BBB", "BBB-"]
+    outlooks = ["稳定", "正面", "负面", "稳定", "稳定", "稳定"]
+    change_types = ["upgrade", "downgrade", "outlook", "upgrade", "downgrade", "outlook", "upgrade"]
+    descriptions_upgrade = [
+        "公司经营状况持续向好，盈利能力提升",
+        "债务结构优化，流动性充裕",
+        "行业地位稳固，市场竞争力增强",
+        "股东背景强大，外部支持力度提升",
+        "财务指标改善，偿债能力增强",
+    ]
+    descriptions_downgrade = [
+        "行业景气度下行，盈利空间收窄",
+        "债务规模上升，财务杠杆加大",
+        "现金流紧张，短期偿债压力加大",
+        "公司治理存在瑕疵，内部控制待加强",
+        "外部融资环境收紧，再融资压力上升",
+    ]
+    descriptions_outlook = [
+        "未来发展存在不确定性，展望调整为正面",
+        "行业政策环境变化，展望调整为负面",
+        "公司战略调整，展望维持稳定",
+        "外部经营环境改善，展望调整为正面",
+        "盈利预测下调，展望调整为负面",
+    ]
+
+    today = date.today()
+
+    for bond in bonds:
+        num_changes = random.randint(1, 4)
+        for i in range(num_changes):
+            change_type = random.choice(change_types)
+            agency = random.choice(agencies)
+            effective_date = today - timedelta(days=random.randint(1, 365))
+
+            current_rating = bond.credit_rating or "AA"
+            current_idx = rating_levels.index(current_rating) if current_rating in rating_levels else 3
+
+            rc = RatingChange(
+                bond_id=bond.id,
+                agency=agency,
+                change_type=change_type,
+                effective_date=effective_date,
+            )
+
+            if change_type == "upgrade":
+                new_idx = max(0, current_idx - random.randint(1, 2))
+                rc.old_rating = rating_levels[current_idx]
+                rc.new_rating = rating_levels[new_idx]
+                rc.old_outlook = random.choice(outlooks)
+                rc.new_outlook = random.choice(["稳定", "正面", "稳定"])
+                rc.description = random.choice(descriptions_upgrade)
+            elif change_type == "downgrade":
+                new_idx = min(len(rating_levels) - 1, current_idx + random.randint(1, 2))
+                rc.old_rating = rating_levels[current_idx]
+                rc.new_rating = rating_levels[new_idx]
+                rc.old_outlook = random.choice(outlooks)
+                rc.new_outlook = random.choice(["稳定", "负面", "稳定"])
+                rc.description = random.choice(descriptions_downgrade)
+            else:
+                rc.old_rating = current_rating
+                rc.new_rating = current_rating
+                rc.old_outlook = random.choice(outlooks)
+                outlooks_without_old = [o for o in outlooks if o != rc.old_outlook]
+                rc.new_outlook = random.choice(outlooks_without_old)
+                rc.description = random.choice(descriptions_outlook)
+
+            db.add(rc)

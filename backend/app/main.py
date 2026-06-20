@@ -8,7 +8,7 @@ import sys
 from app.config import settings
 from app.database import init_db, async_session
 from app.seed.seed_data import seed_all
-from app.api import auth, bonds, quotes, trades, futures, swaps, dashboard, favorites, admin, calendar, user
+from app.api import auth, bonds, quotes, trades, futures, swaps, dashboard, favorites, admin, calendar, user, rating_changes
 
 logger.remove()
 logger.add(sys.stderr, format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}", level="INFO")
@@ -54,6 +54,7 @@ app.include_router(favorites.router)
 app.include_router(admin.router)
 app.include_router(calendar.router)
 app.include_router(user.router)
+app.include_router(rating_changes.router)
 
 
 @app.get("/api/health")

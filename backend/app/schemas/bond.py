@@ -5,6 +5,31 @@ from typing import Optional
 from pydantic import BaseModel
 
 
+class RatingChangeOut(BaseModel):
+    id: UUID
+    bond_id: UUID
+    agency: str
+    change_type: str
+    old_rating: Optional[str] = None
+    new_rating: Optional[str] = None
+    old_outlook: Optional[str] = None
+    new_outlook: Optional[str] = None
+    effective_date: date
+    description: Optional[str] = None
+    created_at: Optional[datetime] = None
+    bond_code: Optional[str] = None
+    bond_name: Optional[str] = None
+
+    model_config = {"from_attributes": True}
+
+
+class RatingChangeListOut(BaseModel):
+    items: list[RatingChangeOut]
+    total: int
+    page: int
+    page_size: int
+
+
 class BondOut(BaseModel):
     id: UUID
     code: str

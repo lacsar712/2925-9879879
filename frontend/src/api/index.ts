@@ -39,4 +39,41 @@ api.interceptors.response.use(
   }
 )
 
+export interface RatingChange {
+  id: string
+  bond_id: string
+  agency: string
+  change_type: 'upgrade' | 'downgrade' | 'outlook'
+  old_rating?: string
+  new_rating?: string
+  old_outlook?: string
+  new_outlook?: string
+  effective_date: string
+  description?: string
+  created_at?: string
+  bond_code?: string
+  bond_name?: string
+}
+
+export interface RatingChangeListResponse {
+  items: RatingChange[]
+  total: number
+  page: number
+  page_size: number
+}
+
+export async function getRatingChanges(params?: {
+  change_type?: string
+  page?: number
+  page_size?: number
+}): Promise<RatingChangeListResponse> {
+  const response = await api.get('/api/rating-changes', { params })
+  return response.data
+}
+
+export async function getRatingChange(id: string): Promise<RatingChange> {
+  const response = await api.get(`/api/rating-changes/${id}`)
+  return response.data
+}
+
 export default api
