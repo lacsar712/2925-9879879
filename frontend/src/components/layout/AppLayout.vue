@@ -52,6 +52,12 @@
           </template>
           收益互换
         </a-menu-item>
+        <a-menu-item key="/research">
+          <template #icon>
+            <FileTextOutlined />
+          </template>
+          研报摘要
+        </a-menu-item>
         <a-menu-item key="/favorites">
           <template #icon>
             <StarOutlined />
@@ -98,6 +104,7 @@ import {
   TransactionOutlined,
   StarOutlined,
   SettingOutlined,
+  FileTextOutlined,
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '../../stores/auth'
 
