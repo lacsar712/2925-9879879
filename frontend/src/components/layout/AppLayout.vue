@@ -34,6 +34,12 @@
           </template>
           聚合行情
         </a-menu-item>
+        <a-menu-item key="/quote-board">
+          <template #icon>
+            <TableOutlined />
+          </template>
+          经纪商报价板
+        </a-menu-item>
         <a-menu-item key="/trades">
           <template #icon>
             <SwapOutlined />
@@ -105,6 +111,7 @@ import {
   StarOutlined,
   SettingOutlined,
   FileTextOutlined,
+  TableOutlined,
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '../../stores/auth'
 

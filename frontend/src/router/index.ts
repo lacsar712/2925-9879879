@@ -20,6 +20,7 @@ const router = createRouter({
         { path: 'calendar', name: 'BondCalendar', component: () => import('../views/BondCalendar.vue') },
         { path: 'market', name: 'Market', component: () => import('../views/MarketView.vue') },
         { path: 'market/:id', name: 'BondDetail', component: () => import('../views/BondDetail.vue') },
+        { path: 'quote-board', name: 'QuoteBoard', component: () => import('../views/QuoteBoardView.vue') },
         { path: 'trades', name: 'Trades', component: () => import('../views/TradesView.vue') },
         { path: 'futures', name: 'Futures', component: () => import('../views/FuturesView.vue') },
         { path: 'swaps', name: 'Swaps', component: () => import('../views/SwapsView.vue') },
