@@ -88,9 +88,34 @@
     </a-layout-sider>
     <a-layout>
       <a-layout-header class="app-header flex items-center justify-between px-6 bg-white border-b border-gray-200">
-        <div class="flex-1" />
-        <div class="flex items-center gap-4">
-          <span class="text-gray-600">{{ authStore.user?.display_name || authStore.user?.username }}</span>
+        <div class="flex items-center gap-2">
+          <a-button
+            type="text"
+            size="small"
+            class="header-action-btn"
+            @click="handleOpenSearch"
+          >
+            <template #icon>
+              <SearchOutlined />
+            </template>
+            <span class="hidden md:inline">搜索</span>
+            <kbd class="header-kbd hidden md:inline">Ctrl K</kbd>
+          </a-button>
+        </div>
+        <div class="flex items-center gap-2">
+          <a-button
+            type="text"
+            size="small"
+            class="header-action-btn"
+            @click="handleOpenCheatsheet"
+          >
+            <template #icon>
+              <QuestionCircleOutlined />
+            </template>
+            <span class="hidden md:inline">快捷键</span>
+            <kbd class="header-kbd hidden md:inline">?</kbd>
+          </a-button>
+          <span class="text-gray-600 ml-2">{{ authStore.user?.display_name || authStore.user?.username }}</span>
           <a-tag :color="roleColor">{{ roleLabel }}</a-tag>
           <a-button type="text" danger size="small" @click="handleLogout">
             退出
@@ -101,6 +126,8 @@
         <router-view />
       </a-layout-content>
     </a-layout>
+    <HotkeyCheatsheet />
+    <GlobalSearch />
   </a-layout>
 </template>
 
@@ -119,12 +146,21 @@ import {
   FileTextOutlined,
   TableOutlined,
   HistoryOutlined,
+  SearchOutlined,
+  QuestionCircleOutlined,
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '../../stores/auth'
+import { useHotkeysStore } from '../../stores/hotkeys'
+import { useHotkeys } from '../../composables/useHotkeys'
+import HotkeyCheatsheet from '../common/HotkeyCheatsheet.vue'
+import GlobalSearch from '../common/GlobalSearch.vue'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const hotkeysStore = useHotkeysStore()
+
+useHotkeys()
 
 const collapsed = ref(false)
 const selectedKeys = ref<string[]>([route.path])
@@ -133,7 +169,6 @@ watch(
   () => route.path,
   (path) => {
     selectedKeys.value = [path]
-    // 处理子菜单高亮：若在 admin 子路由，也高亮父级
     if (path.startsWith('/admin/')) {
       selectedKeys.value = [path]
     }
@@ -162,6 +197,14 @@ function handleMenuClick({ key }: { key: string }) {
 function handleLogout() {
   authStore.logout()
   router.push('/login')
+}
+
+function handleOpenCheatsheet() {
+  hotkeysStore.openCheatsheet()
+}
+
+function handleOpenSearch() {
+  hotkeysStore.openSearch()
 }
 </script>
 
@@ -192,5 +235,29 @@ function handleLogout() {
 .app-header {
   height: 56px;
   line-height: 56px;
+}
+
+.header-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.header-action-btn:hover {
+  background: #f5f5f5;
+}
+
+.header-kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #6b7280;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-bottom-width: 2px;
+  border-radius: 3px;
 }
 </style>
