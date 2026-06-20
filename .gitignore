@@ -9,3 +9,5 @@ build/
 .idea/
 .vscode/
 *.log
+trae/
+evaluation-prompts.md
