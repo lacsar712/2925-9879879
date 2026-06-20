@@ -107,6 +107,12 @@
           <template #title>系统管理</template>
           <a-menu-item key="/admin/users">用户管理</a-menu-item>
           <a-menu-item key="/admin/sources">行情源管理</a-menu-item>
+          <a-menu-item key="/admin/data-quality">
+            <template #icon>
+              <MonitorOutlined />
+            </template>
+            数据质量监控
+          </a-menu-item>
         </a-sub-menu>
       </a-menu>
     </a-layout-sider>
@@ -179,6 +185,7 @@ import {
   RiseOutlined,
   WalletOutlined,
   FireOutlined,
+  MonitorOutlined,
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '../../stores/auth'
 import { useHotkeysStore } from '../../stores/hotkeys'

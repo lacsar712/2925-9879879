@@ -74,6 +74,11 @@ class MarketSource(Base):
     )
     description: Mapped[str] = mapped_column(Text, nullable=True)
     is_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    last_heartbeat: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    avg_latency_ms: Mapped[float] = mapped_column(Numeric(10, 2), nullable=True)
+    today_missing_quotes: Mapped[int] = mapped_column(default=0)
+    today_inverted_spreads: Mapped[int] = mapped_column(default=0)
+    health_score: Mapped[float] = mapped_column(Numeric(5, 2), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     quotes = relationship("Quote", back_populates="source", lazy="selectin")

@@ -76,4 +76,44 @@ export async function getRatingChange(id: string): Promise<RatingChange> {
   return response.data
 }
 
+export interface DataQualityOverview {
+  total_sources: number
+  enabled_sources: number
+  disabled_sources: number
+  online_sources: number
+  offline_sources: number
+  error_sources: number
+  healthy_sources: number
+  warning_sources: number
+  critical_sources: number
+  avg_latency_ms: number
+  total_missing_quotes: number
+  total_inverted_spreads: number
+  avg_health_score: number
+}
+
+export interface DataQualitySource {
+  id: string
+  name: string
+  source_type: string
+  status: 'online' | 'offline' | 'error'
+  is_enabled: boolean
+  last_heartbeat: string | null
+  avg_latency_ms: number | null
+  today_missing_quotes: number
+  today_inverted_spreads: number
+  health_score: number | null
+  description?: string
+}
+
+export async function getDataQualityOverview(): Promise<DataQualityOverview> {
+  const response = await api.get('/api/admin/data-quality/overview')
+  return response.data
+}
+
+export async function getDataQualitySources(): Promise<DataQualitySource[]> {
+  const response = await api.get('/api/admin/data-quality/sources')
+  return response.data
+}
+
 export default api

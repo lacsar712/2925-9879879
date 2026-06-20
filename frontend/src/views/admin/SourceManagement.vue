@@ -10,8 +10,8 @@
         :row-key="(r) => r.id"
       >
         <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'type'">
-            <a-tag>{{ sourceTypeLabel(record.type) }}</a-tag>
+          <template v-if="column.key === 'source_type'">
+            <a-tag>{{ sourceTypeLabel(record.source_type) }}</a-tag>
           </template>
           <template v-else-if="column.key === 'status'">
             <a-badge
@@ -19,9 +19,9 @@
               :text="sourceStatusText(record.status)"
             />
           </template>
-          <template v-else-if="column.key === 'enabled'">
+          <template v-else-if="column.key === 'is_enabled'">
             <a-switch
-              :checked="record.enabled"
+              :checked="record.is_enabled"
               @change="(checked) => handleToggleEnabled(record.id, !!checked)"
             />
           </template>
@@ -39,10 +39,10 @@ import { sourceTypeLabel } from '../../utils/format'
 interface SourceItem {
   id: string
   name: string
-  type: string
+  source_type: string
   status: 'online' | 'offline' | 'error'
   description?: string
-  enabled: boolean
+  is_enabled: boolean
 }
 
 const loading = ref(false)
@@ -68,10 +68,10 @@ function sourceStatusText(status: string): string {
 
 const columns = [
   { title: '名称', dataIndex: 'name', key: 'name', width: 140 },
-  { title: '类型', key: 'type', dataIndex: 'type', width: 120 },
+  { title: '类型', key: 'source_type', dataIndex: 'source_type', width: 120 },
   { title: '状态', key: 'status', dataIndex: 'status', width: 100 },
   { title: '描述', dataIndex: 'description', key: 'description', ellipsis: true },
-  { title: '是否启用', key: 'enabled', dataIndex: 'enabled', width: 100 },
+  { title: '是否启用', key: 'is_enabled', dataIndex: 'is_enabled', width: 100 },
 ]
 
 async function fetchSources() {
@@ -87,11 +87,11 @@ async function fetchSources() {
   }
 }
 
-async function handleToggleEnabled(id: string, enabled: boolean) {
+async function handleToggleEnabled(id: string, is_enabled: boolean) {
   try {
-    await api.put(`/api/admin/sources/${id}`, { enabled })
+    await api.put(`/api/admin/sources/${id}`, { is_enabled })
     const item = sources.value.find((s) => s.id === id)
-    if (item) item.enabled = enabled
+    if (item) item.is_enabled = is_enabled
   } catch {
     // 错误由 api 拦截器处理
   }

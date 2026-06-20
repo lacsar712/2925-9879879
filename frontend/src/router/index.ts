@@ -35,6 +35,7 @@ const router = createRouter({
         { path: 'settings/appearance', name: 'AppearanceSettings', component: () => import('../views/AppearanceSettings.vue') },
         { path: 'admin/users', name: 'AdminUsers', component: () => import('../views/admin/UserManagement.vue') },
         { path: 'admin/sources', name: 'AdminSources', component: () => import('../views/admin/SourceManagement.vue') },
+        { path: 'admin/data-quality', name: 'AdminDataQuality', component: () => import('../views/admin/DataQualityMonitoring.vue') },
       ],
     },
   ],

@@ -63,19 +63,36 @@ async def seed_users(db: AsyncSession) -> list[User]:
 
 
 async def seed_sources(db: AsyncSession) -> list[MarketSource]:
+    now = datetime.utcnow()
     sources_data = [
-        {"name": "银行间xBond", "source_type": "xbond", "description": "银行间市场xBond交易系统报价与成交数据"},
-        {"name": "中诚宝捷思", "source_type": "broker", "description": "中诚宝捷思货币经纪公司报价与成交数据"},
-        {"name": "平安利顺", "source_type": "broker", "description": "平安利顺国际货币经纪公司报价与成交数据"},
-        {"name": "上海国利", "source_type": "broker", "description": "上海国利货币经纪有限公司报价与成交数据"},
-        {"name": "上交所", "source_type": "exchange", "description": "上海证券交易所债券行情数据"},
-        {"name": "深交所", "source_type": "exchange", "description": "深圳证券交易所债券行情数据"},
-        {"name": "收益互换", "source_type": "swap", "description": "场外衍生品交易商债券收益互换报价"},
-        {"name": "中金所期货", "source_type": "futures", "description": "中国金融期货交易所国债期货行情"},
+        {"name": "银行间xBond", "source_type": "xbond", "description": "银行间市场xBond交易系统报价与成交数据",
+         "status": "online", "is_enabled": True, "avg_latency_ms": 15.5, "today_missing_quotes": 2,
+         "today_inverted_spreads": 0, "health_score": 95.5, "last_heartbeat": now - timedelta(seconds=8)},
+        {"name": "中诚宝捷思", "source_type": "broker", "description": "中诚宝捷思货币经纪公司报价与成交数据",
+         "status": "online", "is_enabled": True, "avg_latency_ms": 42.3, "today_missing_quotes": 8,
+         "today_inverted_spreads": 2, "health_score": 82.0, "last_heartbeat": now - timedelta(seconds=15)},
+        {"name": "平安利顺", "source_type": "broker", "description": "平安利顺国际货币经纪公司报价与成交数据",
+         "status": "online", "is_enabled": True, "avg_latency_ms": 38.7, "today_missing_quotes": 5,
+         "today_inverted_spreads": 1, "health_score": 88.5, "last_heartbeat": now - timedelta(seconds=12)},
+        {"name": "上海国利", "source_type": "broker", "description": "上海国利货币经纪有限公司报价与成交数据",
+         "status": "error", "is_enabled": True, "avg_latency_ms": 125.8, "today_missing_quotes": 45,
+         "today_inverted_spreads": 12, "health_score": 45.2, "last_heartbeat": now - timedelta(minutes=5)},
+        {"name": "上交所", "source_type": "exchange", "description": "上海证券交易所债券行情数据",
+         "status": "online", "is_enabled": True, "avg_latency_ms": 8.2, "today_missing_quotes": 0,
+         "today_inverted_spreads": 0, "health_score": 99.0, "last_heartbeat": now - timedelta(seconds=3)},
+        {"name": "深交所", "source_type": "exchange", "description": "深圳证券交易所债券行情数据",
+         "status": "online", "is_enabled": True, "avg_latency_ms": 10.5, "today_missing_quotes": 1,
+         "today_inverted_spreads": 0, "health_score": 97.2, "last_heartbeat": now - timedelta(seconds=5)},
+        {"name": "收益互换", "source_type": "swap", "description": "场外衍生品交易商债券收益互换报价",
+         "status": "offline", "is_enabled": False, "avg_latency_ms": None, "today_missing_quotes": 0,
+         "today_inverted_spreads": 0, "health_score": None, "last_heartbeat": now - timedelta(hours=3)},
+        {"name": "中金所期货", "source_type": "futures", "description": "中国金融期货交易所国债期货行情",
+         "status": "online", "is_enabled": True, "avg_latency_ms": 22.1, "today_missing_quotes": 3,
+         "today_inverted_spreads": 0, "health_score": 91.8, "last_heartbeat": now - timedelta(seconds=10)},
     ]
     sources = []
     for s in sources_data:
-        source = MarketSource(**s, status="online")
+        source = MarketSource(**s)
         db.add(source)
         sources.append(source)
     return sources
