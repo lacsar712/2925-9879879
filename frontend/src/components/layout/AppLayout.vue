@@ -40,6 +40,12 @@
           </template>
           经纪商报价板
         </a-menu-item>
+        <a-menu-item key="/history-replay">
+          <template #icon>
+            <HistoryOutlined />
+          </template>
+          历史行情回放
+        </a-menu-item>
         <a-menu-item key="/trades">
           <template #icon>
             <SwapOutlined />
@@ -112,6 +118,7 @@ import {
   SettingOutlined,
   FileTextOutlined,
   TableOutlined,
+  HistoryOutlined,
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '../../stores/auth'
 

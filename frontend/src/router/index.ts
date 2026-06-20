@@ -21,6 +21,7 @@ const router = createRouter({
         { path: 'market', name: 'Market', component: () => import('../views/MarketView.vue') },
         { path: 'market/:id', name: 'BondDetail', component: () => import('../views/BondDetail.vue') },
         { path: 'quote-board', name: 'QuoteBoard', component: () => import('../views/QuoteBoardView.vue') },
+        { path: 'history-replay', name: 'HistoryReplay', component: () => import('../views/HistoryReplayView.vue') },
         { path: 'trades', name: 'Trades', component: () => import('../views/TradesView.vue') },
         { path: 'futures', name: 'Futures', component: () => import('../views/FuturesView.vue') },
         { path: 'swaps', name: 'Swaps', component: () => import('../views/SwapsView.vue') },
