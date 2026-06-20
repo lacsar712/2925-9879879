@@ -76,6 +76,12 @@
           </template>
           我的关注
         </a-menu-item>
+        <a-menu-item key="/settings/appearance">
+          <template #icon>
+            <BgColorsOutlined />
+          </template>
+          外观设置
+        </a-menu-item>
         <a-sub-menu v-if="authStore.isAdmin()" key="admin">
           <template #icon>
             <SettingOutlined />
@@ -103,6 +109,7 @@
           </a-button>
         </div>
         <div class="flex items-center gap-2">
+          <ThemeSwitcher />
           <a-button
             type="text"
             size="small"
@@ -115,7 +122,9 @@
             <span class="hidden md:inline">快捷键</span>
             <kbd class="header-kbd hidden md:inline">?</kbd>
           </a-button>
-          <span class="text-gray-600 ml-2">{{ authStore.user?.display_name || authStore.user?.username }}</span>
+          <span class="ml-2" :style="{ color: 'var(--theme-text-secondary)' }">
+            {{ authStore.user?.display_name || authStore.user?.username }}
+          </span>
           <a-tag :color="roleColor">{{ roleLabel }}</a-tag>
           <a-button type="text" danger size="small" @click="handleLogout">
             退出
@@ -148,12 +157,14 @@ import {
   HistoryOutlined,
   SearchOutlined,
   QuestionCircleOutlined,
+  BgColorsOutlined,
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '../../stores/auth'
 import { useHotkeysStore } from '../../stores/hotkeys'
 import { useHotkeys } from '../../composables/useHotkeys'
 import HotkeyCheatsheet from '../common/HotkeyCheatsheet.vue'
 import GlobalSearch from '../common/GlobalSearch.vue'
+import ThemeSwitcher from '../common/ThemeSwitcher.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -210,7 +221,7 @@ function handleOpenSearch() {
 
 <style scoped>
 .app-layout :deep(.ant-layout-sider) {
-  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+  background: linear-gradient(180deg, var(--theme-sider-bg-start) 0%, var(--theme-sider-bg-start) 50%, var(--theme-sider-bg-end) 100%) !important;
 }
 
 .app-menu :deep(.ant-menu) {
@@ -219,17 +230,17 @@ function handleOpenSearch() {
 
 .app-menu :deep(.ant-menu-item),
 .app-menu :deep(.ant-menu-submenu-title) {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--theme-sider-menu-text);
 }
 
 .app-menu :deep(.ant-menu-item-selected) {
-  background: rgba(255, 255, 255, 0.15) !important;
-  color: #fff !important;
+  background: var(--theme-sider-menu-bg-active) !important;
+  color: var(--theme-sider-menu-text-active) !important;
 }
 
 .app-menu :deep(.ant-menu-item:hover),
 .app-menu :deep(.ant-menu-submenu-title:hover) {
-  color: #fff !important;
+  color: var(--theme-sider-menu-text-active) !important;
 }
 
 .app-header {
@@ -246,7 +257,7 @@ function handleOpenSearch() {
 }
 
 .header-action-btn:hover {
-  background: #f5f5f5;
+  background: var(--theme-table-hover-bg);
 }
 
 .header-kbd {
@@ -254,9 +265,9 @@ function handleOpenSearch() {
   padding: 1px 6px;
   font-size: 10px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  color: #6b7280;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  color: var(--theme-text-tertiary);
+  background: var(--theme-table-row-bg-alt);
+  border: 1px solid var(--theme-border-secondary);
   border-bottom-width: 2px;
   border-radius: 3px;
 }

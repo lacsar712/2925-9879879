@@ -185,8 +185,11 @@ import { GridComponent, TooltipComponent, TitleComponent } from 'echarts/compone
 import VChart from 'vue-echarts'
 import api from '../api'
 import { formatVolume, formatAmount, bondTypeColor } from '../utils/format'
+import { useTheme } from '../composables/useTheme'
 
 use([CanvasRenderer, LineChart, GridComponent, TooltipComponent, TitleComponent])
+
+const { getChartColors } = useTheme()
 
 interface Overview {
   bond_count?: number
@@ -242,19 +245,27 @@ const yieldCurveOption = computed(() => {
   if (!data || data.length === 0) return null
   const terms = data.map(p => p.term + '年')
   const yields = data.map(p => p.yield)
+  const chartColors = getChartColors()
   return {
     tooltip: {
       trigger: 'axis',
+      backgroundColor: chartColors.tooltipBg,
+      textStyle: { color: chartColors.tooltipText },
     },
     xAxis: {
       type: 'category' as const,
       data: terms,
-      axisLabel: { rotate: 30 },
+      axisLabel: { rotate: 30, color: chartColors.axis },
+      axisLine: { lineStyle: { color: chartColors.grid } },
+      splitLine: { lineStyle: { color: chartColors.grid } },
     },
     yAxis: {
       type: 'value' as const,
       name: '收益率%',
-      axisLabel: { formatter: '{value}%' },
+      axisLabel: { formatter: '{value}%', color: chartColors.axis },
+      axisLine: { lineStyle: { color: chartColors.grid } },
+      splitLine: { lineStyle: { color: chartColors.grid } },
+      nameTextStyle: { color: chartColors.axis },
     },
     series: [
       {
@@ -263,9 +274,18 @@ const yieldCurveOption = computed(() => {
         smooth: true,
         symbol: 'circle',
         symbolSize: 6,
-        lineStyle: { color: '#1890ff', width: 2 },
-        itemStyle: { color: '#1890ff' },
-        areaStyle: { color: 'rgba(24,144,255,0.1)' },
+        lineStyle: { color: chartColors.line, width: 2 },
+        itemStyle: { color: chartColors.line },
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [
+              { offset: 0, color: chartColors.areaStart },
+              { offset: 1, color: chartColors.areaEnd },
+            ],
+          },
+        },
       },
     ],
     grid: { left: '3%', right: '4%', bottom: '15%', top: '10%', containLabel: true },

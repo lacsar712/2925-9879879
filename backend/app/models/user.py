@@ -1,9 +1,10 @@
 import uuid
+import json
 from datetime import datetime
 
-from sqlalchemy import String, Boolean, DateTime, Enum, ForeignKey, UniqueConstraint, func
+from sqlalchemy import String, Boolean, DateTime, Enum, ForeignKey, UniqueConstraint, func, Text
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, validates
 
 from app.database import Base
 
@@ -21,7 +22,19 @@ class User(Base):
     )
     department: Mapped[str] = mapped_column(String(100), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    settings: Mapped[str] = mapped_column(Text, nullable=True, default="{}")
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    def get_settings(self) -> dict:
+        try:
+            return json.loads(self.settings) if self.settings else {}
+        except (json.JSONDecodeError, TypeError):
+            return {}
+
+    def set_settings(self, settings_dict: dict) -> None:
+        current = self.get_settings()
+        current.update(settings_dict)
+        self.settings = json.dumps(current, ensure_ascii=False)
 
 
 class UserFavorite(Base):
