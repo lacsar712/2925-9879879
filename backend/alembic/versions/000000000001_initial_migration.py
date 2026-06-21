@@ -17,19 +17,55 @@ down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
+BOND_TYPE_ENUM = postgresql.ENUM(
+    '国债', '政金债', '企业债', '公司债', '可转债', '地方债', '同业存单',
+    name='bond_type_enum', create_type=False,
+)
+COUPON_TYPE_ENUM = postgresql.ENUM(
+    '固定利率', '浮动利率', '零息', '贴现',
+    name='coupon_type_enum', create_type=False,
+)
+SOURCE_TYPE_ENUM = postgresql.ENUM(
+    'xbond', 'broker', 'exchange', 'swap', 'futures',
+    name='source_type_enum', create_type=False,
+)
+SOURCE_STATUS_ENUM = postgresql.ENUM(
+    'online', 'offline', 'error',
+    name='source_status_enum', create_type=False,
+)
+TRADE_DIRECTION_ENUM = postgresql.ENUM(
+    'buy', 'sell',
+    name='trade_direction_enum', create_type=False,
+)
+FUTURES_TYPE_ENUM = postgresql.ENUM(
+    'T', 'TF', 'TS',
+    name='futures_type_enum', create_type=False,
+)
+SWAP_DIRECTION_ENUM = postgresql.ENUM(
+    'pay_fixed', 'receive_fixed',
+    name='swap_direction_enum', create_type=False,
+)
+USER_ROLE_ENUM = postgresql.ENUM(
+    'admin', 'trader', 'viewer',
+    name='user_role_enum', create_type=False,
+)
+RATING_CHANGE_TYPE_ENUM = postgresql.ENUM(
+    'upgrade', 'downgrade', 'outlook',
+    name='rating_change_type_enum', create_type=False,
+)
+
 
 def upgrade() -> None:
-    op.execute("""
-        CREATE TYPE bond_type_enum AS ENUM ('国债', '政金债', '企业债', '公司债', '可转债', '地方债', '同业存单');
-        CREATE TYPE coupon_type_enum AS ENUM ('固定利率', '浮动利率', '零息', '贴现');
-        CREATE TYPE source_type_enum AS ENUM ('xbond', 'broker', 'exchange', 'swap', 'futures');
-        CREATE TYPE source_status_enum AS ENUM ('online', 'offline', 'error');
-        CREATE TYPE trade_direction_enum AS ENUM ('buy', 'sell');
-        CREATE TYPE futures_type_enum AS ENUM ('T', 'TF', 'TS');
-        CREATE TYPE swap_direction_enum AS ENUM ('pay_fixed', 'receive_fixed');
-        CREATE TYPE user_role_enum AS ENUM ('admin', 'trader', 'viewer');
-        CREATE TYPE rating_change_type_enum AS ENUM ('upgrade', 'downgrade', 'outlook');
-    """)
+    # asyncpg 不支持在单条 prepared statement 中执行多条 SQL，需逐条执行
+    op.execute("CREATE TYPE bond_type_enum AS ENUM ('国债', '政金债', '企业债', '公司债', '可转债', '地方债', '同业存单')")
+    op.execute("CREATE TYPE coupon_type_enum AS ENUM ('固定利率', '浮动利率', '零息', '贴现')")
+    op.execute("CREATE TYPE source_type_enum AS ENUM ('xbond', 'broker', 'exchange', 'swap', 'futures')")
+    op.execute("CREATE TYPE source_status_enum AS ENUM ('online', 'offline', 'error')")
+    op.execute("CREATE TYPE trade_direction_enum AS ENUM ('buy', 'sell')")
+    op.execute("CREATE TYPE futures_type_enum AS ENUM ('T', 'TF', 'TS')")
+    op.execute("CREATE TYPE swap_direction_enum AS ENUM ('pay_fixed', 'receive_fixed')")
+    op.execute("CREATE TYPE user_role_enum AS ENUM ('admin', 'trader', 'viewer')")
+    op.execute("CREATE TYPE rating_change_type_enum AS ENUM ('upgrade', 'downgrade', 'outlook')")
 
     op.create_table(
         'bonds',
@@ -37,12 +73,12 @@ def upgrade() -> None:
         sa.Column('code', sa.String(length=20), nullable=False),
         sa.Column('name', sa.String(length=100), nullable=False),
         sa.Column('full_name', sa.String(length=200), nullable=True),
-        sa.Column('bond_type', sa.Enum('国债', '政金债', '企业债', '公司债', '可转债', '地方债', '同业存单', name='bond_type_enum'), nullable=False),
+        sa.Column('bond_type', BOND_TYPE_ENUM, nullable=False),
         sa.Column('issuer', sa.String(length=200), nullable=False),
         sa.Column('issue_date', sa.Date(), nullable=True),
         sa.Column('maturity_date', sa.Date(), nullable=True),
         sa.Column('coupon_rate', sa.Numeric(precision=8, scale=4), nullable=True),
-        sa.Column('coupon_type', sa.Enum('固定利率', '浮动利率', '零息', '贴现', name='coupon_type_enum'), nullable=True),
+        sa.Column('coupon_type', COUPON_TYPE_ENUM, nullable=True),
         sa.Column('face_value', sa.Numeric(precision=15, scale=2), nullable=True),
         sa.Column('credit_rating', sa.String(length=10), nullable=True),
         sa.Column('remaining_term', sa.Numeric(precision=8, scale=4), nullable=True),
@@ -57,8 +93,8 @@ def upgrade() -> None:
         'market_sources',
         sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('name', sa.String(length=50), nullable=False),
-        sa.Column('source_type', sa.Enum('xbond', 'broker', 'exchange', 'swap', 'futures', name='source_type_enum'), nullable=False),
-        sa.Column('status', sa.Enum('online', 'offline', 'error', name='source_status_enum'), nullable=True),
+        sa.Column('source_type', SOURCE_TYPE_ENUM, nullable=False),
+        sa.Column('status', SOURCE_STATUS_ENUM, nullable=True),
         sa.Column('description', sa.Text(), nullable=True),
         sa.Column('is_enabled', sa.Boolean(), nullable=True),
         sa.Column('last_heartbeat', sa.DateTime(), nullable=True),
@@ -77,7 +113,7 @@ def upgrade() -> None:
         sa.Column('username', sa.String(length=50), nullable=False),
         sa.Column('password_hash', sa.String(length=255), nullable=False),
         sa.Column('display_name', sa.String(length=50), nullable=False),
-        sa.Column('role', sa.Enum('admin', 'trader', 'viewer', name='user_role_enum'), nullable=True),
+        sa.Column('role', USER_ROLE_ENUM, nullable=True),
         sa.Column('department', sa.String(length=100), nullable=True),
         sa.Column('is_active', sa.Boolean(), nullable=True),
         sa.Column('settings', sa.Text(), nullable=True),
@@ -90,7 +126,7 @@ def upgrade() -> None:
         'futures_quotes',
         sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('contract_code', sa.String(length=20), nullable=False),
-        sa.Column('contract_type', sa.Enum('T', 'TF', 'TS', name='futures_type_enum'), nullable=False),
+        sa.Column('contract_type', FUTURES_TYPE_ENUM, nullable=False),
         sa.Column('latest_price', sa.Numeric(precision=10, scale=4), nullable=False),
         sa.Column('settlement_price', sa.Numeric(precision=10, scale=4), nullable=True),
         sa.Column('open_price', sa.Numeric(precision=10, scale=4), nullable=True),
@@ -112,7 +148,7 @@ def upgrade() -> None:
         sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('bond_id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('agency', sa.String(length=50), nullable=False),
-        sa.Column('change_type', sa.Enum('upgrade', 'downgrade', 'outlook', name='rating_change_type_enum'), nullable=False),
+        sa.Column('change_type', RATING_CHANGE_TYPE_ENUM, nullable=False),
         sa.Column('old_rating', sa.String(length=20), nullable=True),
         sa.Column('new_rating', sa.String(length=20), nullable=True),
         sa.Column('old_outlook', sa.String(length=20), nullable=True),
@@ -157,7 +193,7 @@ def upgrade() -> None:
         sa.Column('yield_rate', sa.Numeric(precision=8, scale=4), nullable=True),
         sa.Column('volume', sa.Numeric(precision=15, scale=2), nullable=False),
         sa.Column('amount', sa.Numeric(precision=18, scale=2), nullable=True),
-        sa.Column('direction', sa.Enum('buy', 'sell', name='trade_direction_enum'), nullable=False),
+        sa.Column('direction', TRADE_DIRECTION_ENUM, nullable=False),
         sa.Column('counterparty', sa.String(length=100), nullable=True),
         sa.Column('trade_time', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.ForeignKeyConstraint(['bond_id'], ['bonds.id'], ),
@@ -175,7 +211,7 @@ def upgrade() -> None:
         sa.Column('dealer', sa.String(length=100), nullable=False),
         sa.Column('swap_rate', sa.Numeric(precision=8, scale=4), nullable=False),
         sa.Column('tenor', sa.String(length=20), nullable=False),
-        sa.Column('direction', sa.Enum('pay_fixed', 'receive_fixed', name='swap_direction_enum'), nullable=False),
+        sa.Column('direction', SWAP_DIRECTION_ENUM, nullable=False),
         sa.Column('notional_min', sa.Numeric(precision=18, scale=2), nullable=True),
         sa.Column('quote_time', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.ForeignKeyConstraint(['bond_id'], ['bonds.id'], ),
@@ -235,14 +271,12 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_bonds_code'), table_name='bonds')
     op.drop_table('bonds')
 
-    op.execute("""
-        DROP TYPE IF EXISTS rating_change_type_enum;
-        DROP TYPE IF EXISTS user_role_enum;
-        DROP TYPE IF EXISTS swap_direction_enum;
-        DROP TYPE IF EXISTS futures_type_enum;
-        DROP TYPE IF EXISTS trade_direction_enum;
-        DROP TYPE IF EXISTS source_status_enum;
-        DROP TYPE IF EXISTS source_type_enum;
-        DROP TYPE IF EXISTS coupon_type_enum;
-        DROP TYPE IF EXISTS bond_type_enum;
-    """)
+    op.execute("DROP TYPE IF EXISTS rating_change_type_enum")
+    op.execute("DROP TYPE IF EXISTS user_role_enum")
+    op.execute("DROP TYPE IF EXISTS swap_direction_enum")
+    op.execute("DROP TYPE IF EXISTS futures_type_enum")
+    op.execute("DROP TYPE IF EXISTS trade_direction_enum")
+    op.execute("DROP TYPE IF EXISTS source_status_enum")
+    op.execute("DROP TYPE IF EXISTS source_type_enum")
+    op.execute("DROP TYPE IF EXISTS coupon_type_enum")
+    op.execute("DROP TYPE IF EXISTS bond_type_enum")

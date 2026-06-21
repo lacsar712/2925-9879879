@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 from alembic import command
@@ -37,4 +38,5 @@ def run_migrations() -> None:
 
 
 async def init_db():
-    run_migrations()
+    # Alembic env.py 使用 asyncio.run()，不能在 uvicorn 已有事件循环中直接调用
+    await asyncio.to_thread(run_migrations)
