@@ -15,5 +15,10 @@ while ! python -c "import redis; r=redis.Redis(host='redis', port=6379); r.ping(
 done
 echo "Redis 已就绪"
 
+echo "执行数据库迁移..."
+cd /app
+alembic upgrade head
+echo "数据库迁移完成"
+
 echo "启动 BondView 后端服务..."
 exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1

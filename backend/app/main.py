@@ -18,7 +18,7 @@ logger.add(sys.stderr, format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}
 async def lifespan(app: FastAPI):
     logger.info("BondView 债券行情聚合系统启动中...")
     await init_db()
-    logger.info("数据库表创建完成")
+    logger.info("数据库迁移完成")
 
     async with async_session() as session:
         await seed_all(session)

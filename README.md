@@ -17,7 +17,62 @@
    docker compose up --build
    ```
 3. 等待容器启动完成（首次构建约 3-5 分钟）
-4. 系统会自动创建数据库表并填充演示数据
+4. 系统会自动执行数据库迁移并填充演示数据
+
+## 🗄 数据库迁移 (Database Migrations)
+
+本项目使用 **Alembic** 管理数据库 schema 演进。
+
+### 首次部署
+Docker Compose 启动时，`backend/entrypoint.sh` 会自动执行 `alembic upgrade head`，无需手动操作。
+
+### 创建新的迁移
+当修改了 `app/models/` 下的 SQLAlchemy 模型后，需要生成新的迁移脚本：
+
+```bash
+# 进入 backend 目录
+cd backend
+
+# 生成迁移脚本（自动检测模型变更）
+alembic revision --autogenerate -m "描述本次变更的内容"
+
+# 检查生成的迁移脚本，确认无误后执行迁移
+alembic upgrade head
+```
+
+### 升级 / 回滚迁移
+```bash
+# 升级到最新版本
+alembic upgrade head
+
+# 升级到指定版本
+alembic upgrade <revision_id>
+
+# 回滚一个版本
+alembic downgrade -1
+
+# 回滚到指定版本
+alembic downgrade <revision_id>
+
+# 查看当前迁移状态
+alembic current
+
+# 查看迁移历史
+alembic history
+```
+
+### Docker 环境中执行迁移
+如果需要在运行中的 Docker 容器内执行迁移命令：
+
+```bash
+# 进入后端容器
+docker exec -it bondview-backend bash
+
+# 在容器内执行迁移命令
+alembic upgrade head
+```
+
+> **注意**：生产环境中建议在部署新版本前，先单独执行 `alembic upgrade head` 完成数据库升级，再启动新版本的应用服务。
 
 ## 🔗 服务地址 (Services)
 
@@ -84,6 +139,10 @@ bond-market-aggregator/
 └── backend/                    # FastAPI 后端
     ├── Dockerfile
     ├── requirements.txt
+    ├── alembic.ini             # Alembic 配置
+    ├── alembic/                # 数据库迁移脚本
+    │   ├── env.py              # Alembic 环境配置
+    │   └── versions/           # 迁移版本
     └── app/
         ├── main.py             # 入口
         ├── models/             # SQLAlchemy 模型
